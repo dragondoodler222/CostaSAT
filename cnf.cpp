@@ -11,7 +11,7 @@ void gen_cnf(int N) {
     out.open("out.cnf");
     int num_clauses = 0;
 
-    out << "p cnf " << pow(N, 2) << " ?\n";
+    out << "                                        \n";
     int **IDs = new int*[N];
     for (int i = 0; i < N; i++) {
         IDs[i] = new int[N];
@@ -89,8 +89,9 @@ void gen_cnf(int N) {
                 
             }
 
-
-    cout << num_clauses << "\n";
+    // int strlen = 6 + to_string(pow(N, 2)).length() + 1 + to_string(num_clauses).length();
+    out.seekp(0);
+    out << "p cnf " << pow(N, 2) << " " << num_clauses;
     out.close();
 }
 
