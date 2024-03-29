@@ -29,7 +29,7 @@ void gen_cnf(int N) {
 
         for (int j = 0; j < N; j++) {
             for (int k = 0; k < j; k++) {
-                out << IDs[i][j] << " " << IDs[i][k] << " 0\n";
+                out << "-" << IDs[i][j] << " -" << IDs[i][k] << " 0\n";
                 num_clauses++;
             }
         }
@@ -44,14 +44,15 @@ void gen_cnf(int N) {
 
         for (int j = 0; j < N; j++) {
             for (int k = 0; k < j; k++) {
-                out << IDs[j][i] << " " << IDs[k][i] << " 0\n";
+                out << "-" << IDs[j][i] << " -" << IDs[k][i] << " 0\n";
                 num_clauses++;
             }
         }
     }
+    cout << "Row Col Checked. Yay!\n";
 
-    for (int II = 0; II < pow(N, 2); II++)
-        for (int JJ = 0; JJ < II; JJ++)
+    for (int II = 0; II < pow(N, 2); II++) {
+        for (int JJ = 0; JJ < II; JJ++) {
             for (int KK = 0; KK < JJ; KK++) {
                 int x1 = II/N;
                 int y1 = II%N;
@@ -86,8 +87,11 @@ void gen_cnf(int N) {
                         }
                     }
                 }
-                
             }
+        }
+        cout << II;
+        cout << "\n";
+    }
 
     // int strlen = 6 + to_string(pow(N, 2)).length() + 1 + to_string(num_clauses).length();
     out.seekp(0);
@@ -96,5 +100,5 @@ void gen_cnf(int N) {
 }
 
 int main() {
-    gen_cnf(10);
+    gen_cnf(32);
 }
