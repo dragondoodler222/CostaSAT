@@ -12,13 +12,13 @@ with open(sys.argv[2], "r") as file:
 			break
 
 		if line[0] == "c": continue
-		if line[0] == "s": print(line) 
+		if line[0] == "s": print(line)
 
 		if line[0] == "v":
 			vals = line[2:].split(" ")
 			for value in vals:
 				num = int(value)
-				if abs(num) > N**2 + 1:
+				if abs(num) > N**2:
 					continue
 				if num > 0:
 					matrix[num - 1] = 1
