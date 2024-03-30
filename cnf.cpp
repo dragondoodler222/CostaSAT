@@ -49,7 +49,7 @@ void gen_cnf(int N) {
             }
         }
     }
-    cout << "Row Col Checked. Yay!\n";
+    // cout << "Row Col Checked. Yay!\n";
 
     for (int II = 0; II < pow(N, 2); II++) {
         for (int JJ = 0; JJ < II; JJ++) {
@@ -89,8 +89,8 @@ void gen_cnf(int N) {
                 }
             }
         }
-        cout << II;
-        cout << "\n";
+        // cout << II;
+        // cout << "\n";
     }
 
     // int strlen = 6 + to_string(pow(N, 2)).length() + 1 + to_string(num_clauses).length();
@@ -296,13 +296,13 @@ void gen_cnf_slope_bin(int N) {
                     for (int k = 0; k < additional_vars; k++) {
                         if (val & 1)
                             out << "-" << IDs[i][j]  << " -" << IDs[i + m_x][j + m_y] << " " << var_index + k << " 0\n";
-                        else 
+                        else
                             out << "-" << IDs[i][j]  << " -" << IDs[i + m_x][j + m_y] << " -" << var_index + k << " 0\n";
-                        
+
                         val = val >> 1;
                         num_clauses ++;
                     }
-                    
+
                 }
             }
 
@@ -315,20 +315,20 @@ void gen_cnf_slope_bin(int N) {
         for (int m_y = 1; m_y < N; m_y++) {
             if (m_x == N - 1 && m_y == N - 1) continue;
 
-            int additional_vars = 0;
+            int additional_vars = ceil(log2((N - m_x)*(N - m_y)));
 
             for (int i = 0; i < N - m_x; i++) {
                 for (int j = N - 1; j >= m_y; j--) {
                     // Point 1: i, j
                     // Point 2: i + mx, j + my
                     // -P_(1,2) = -x[i][j] v -x[i + mx][j + my]
-                    int val = i*(N-m_y) + j;
+                    int val = i*(N-m_y) + (N - 1 - j);
                     for (int k = 0; k < additional_vars; k++) {
                         if (val & 1)
                             out << "-" << IDs[i][j]  << " -" << IDs[i + m_x][j - m_y] << " " << var_index + k << " 0\n";
-                        else 
+                        else
                             out << "-" << IDs[i][j]  << " -" << IDs[i + m_x][j - m_y] << " -" << var_index + k << " 0\n";
-                        
+
                         val = val >> 1;
                         num_clauses ++;
                     }
@@ -351,5 +351,16 @@ void gen_cnf_slope_bin(int N) {
 }
 
 int main(int argc, char* argv[]) {
-    gen_cnf_slope_bin(stoi(argv[1]));
+    if (stoi(argv[2]) == 0) {
+        gen_cnf(stoi(argv[1]));
+    }
+
+    if (stoi(argv[2]) == 1) {
+        gen_cnf_slope(stoi(argv[1]));
+    }
+
+    if (stoi(argv[2]) == 2) {
+        gen_cnf_slope_bin(stoi(argv[1]));
+    }
+
 }
