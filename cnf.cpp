@@ -203,7 +203,7 @@ void gen_cnf_slope(int N) {
                         continue;
                     }
 
-                    if (i == N - m_x - 1 && j == 0) {
+                    if (i == N - m_x - 1 && j == m_y) {
                         out << "-" << IDs[i][j]  << " -" << IDs[i + m_x][j - m_y] << " -" << var_index + additional_vars - 1 << " 0\n";
                         // additional_vars++;
                         num_clauses++;
