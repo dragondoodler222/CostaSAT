@@ -23,5 +23,6 @@ with open(sys.argv[2], "r") as file:
 				if num > 0:
 					matrix[num - 1] = 1
 
+print(np.where(matrix == 1))
 plt.imshow(matrix.reshape((N, N)))
 plt.show()

@@ -234,6 +234,122 @@ void gen_cnf_slope(int N) {
 
 }
 
+
+void gen_cnf_slope_bin(int N) {
+    ofstream out;
+    out.open("out.cnf");
+    int num_clauses = 0;
+
+    out << "                                        \n";
+    int **IDs = new int*[N];
+    for (int i = 0; i < N; i++) {
+        IDs[i] = new int[N];
+        for (int j = 0; j < N; j++) {
+            IDs[i][j] = i * N + j + 1;
+        }
+    }
+
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            out << IDs[i][j] << " ";
+        }
+        out << "0\n";
+        num_clauses++;
+
+        for (int j = 0; j < N; j++) {
+            for (int k = 0; k < j; k++) {
+                out << "-" << IDs[i][j] << " -" << IDs[i][k] << " 0\n";
+                num_clauses++;
+            }
+        }
+    }
+
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            out << IDs[j][i] << " ";
+        }
+        out << "0\n";
+        num_clauses++;
+
+        for (int j = 0; j < N; j++) {
+            for (int k = 0; k < j; k++) {
+                out << "-" << IDs[j][i] << " -" << IDs[k][i] << " 0\n";
+                num_clauses++;
+            }
+        }
+    }
+
+    int var_index = pow(N, 2) + 1;
+
+    for (int m_x = 1; m_x < N; m_x++) {
+        for (int m_y = 1; m_y < N; m_y++) {
+            if (m_x == N - 1 && m_y == N - 1) continue;
+
+            int additional_vars = ceil(log2((N - m_x)*(N - m_y)));
+
+            for (int i = 0; i < N - m_x; i++) {
+                for (int j = 0; j < N - m_y; j++) {
+                    // Point 1: i, j
+                    // Point 2: i + mx, j + my
+                    // -P_(1,2) = -x[i][j] v -x[i + mx][j + my]
+                    int val = i*(N-m_y) + j;
+                    for (int k = 0; k < additional_vars; k++) {
+                        if (val & 1)
+                            out << "-" << IDs[i][j]  << " -" << IDs[i + m_x][j + m_y] << " " << var_index + k << " 0\n";
+                        else 
+                            out << "-" << IDs[i][j]  << " -" << IDs[i + m_x][j + m_y] << " -" << var_index + k << " 0\n";
+                        
+                        val = val >> 1;
+                        num_clauses ++;
+                    }
+                    
+                }
+            }
+
+            var_index += additional_vars;
+
+        }
+    }
+
+    for (int m_x = 1; m_x < N; m_x++) {
+        for (int m_y = 1; m_y < N; m_y++) {
+            if (m_x == N - 1 && m_y == N - 1) continue;
+
+            int additional_vars = 0;
+
+            for (int i = 0; i < N - m_x; i++) {
+                for (int j = N - 1; j >= m_y; j--) {
+                    // Point 1: i, j
+                    // Point 2: i + mx, j + my
+                    // -P_(1,2) = -x[i][j] v -x[i + mx][j + my]
+                    int val = i*(N-m_y) + j;
+                    for (int k = 0; k < additional_vars; k++) {
+                        if (val & 1)
+                            out << "-" << IDs[i][j]  << " -" << IDs[i + m_x][j + m_y] << " " << var_index + k << " 0\n";
+                        else 
+                            out << "-" << IDs[i][j]  << " -" << IDs[i + m_x][j + m_y] << " -" << var_index + k << " 0\n";
+                        
+                        val = val >> 1;
+                        num_clauses ++;
+                    }
+
+                }
+            }
+
+            var_index += additional_vars;
+
+        }
+    }
+
+    // int strlen = 6 + to_string(pow(N, 2)).length() + 1 + to_string(num_clauses).length();
+    out.seekp(0);
+    out << "p cnf " << var_index - 1 << " " << num_clauses;
+    out.close();
+    // cout << N << ", " << num_clauses << "\n";
+    // cout << N << ", " << var_index - 1 << "\n";
+
+}
+
 int main(int argc, char* argv[]) {
-    gen_cnf_slope(stoi(argv[1]));
+    gen_cnf_slope_bin(stoi(argv[1]));
 }
