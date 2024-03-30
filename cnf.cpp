@@ -325,9 +325,9 @@ void gen_cnf_slope_bin(int N) {
                     int val = i*(N-m_y) + j;
                     for (int k = 0; k < additional_vars; k++) {
                         if (val & 1)
-                            out << "-" << IDs[i][j]  << " -" << IDs[i + m_x][j + m_y] << " " << var_index + k << " 0\n";
+                            out << "-" << IDs[i][j]  << " -" << IDs[i + m_x][j - m_y] << " " << var_index + k << " 0\n";
                         else 
-                            out << "-" << IDs[i][j]  << " -" << IDs[i + m_x][j + m_y] << " -" << var_index + k << " 0\n";
+                            out << "-" << IDs[i][j]  << " -" << IDs[i + m_x][j - m_y] << " -" << var_index + k << " 0\n";
                         
                         val = val >> 1;
                         num_clauses ++;
