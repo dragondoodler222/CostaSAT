@@ -187,8 +187,10 @@ void gen_cnf_slope(int N) {
 
     // int strlen = 6 + to_string(pow(N, 2)).length() + 1 + to_string(num_clauses).length();
     out.seekp(0);
-    out << "p cnf " << pow(N, 2) << " " << num_clauses;
+    out << "p cnf " << var_index - 1 << " " << num_clauses;
     out.close();
+    // cout << N << ", " << num_clauses << "\n";
+    // cout << N << ", " << var_index - 1 << "\n";
 
 }
 
