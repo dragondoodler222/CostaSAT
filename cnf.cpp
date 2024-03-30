@@ -185,6 +185,46 @@ void gen_cnf_slope(int N) {
         }
     }
 
+    for (int m_x = 1; m_x < N; m_x++) {
+        for (int m_y = 1; m_y < N; m_y++) {
+            if (m_x == N - 1 && m_y == N - 1) continue;
+
+            int additional_vars = 0;
+
+            for (int i = 0; i < N - m_x; i++) {
+                for (int j = N - 1; j >= m_y; j--) {
+                    // Point 1: i, j
+                    // Point 2: i + mx, j + my
+                    // -P_(1,2) = -x[i][j] v -x[i + mx][j + my]
+                    if (i == 0 && j == N - 1) {
+                        out << "-" << IDs[i][j]  << " -" << IDs[i + m_x][j - m_y] << " " << var_index + additional_vars << " 0\n";
+                        additional_vars++;
+                        num_clauses++;
+                        continue;
+                    }
+
+                    if (i == N - m_x - 1 && j == 0) {
+                        out << "-" << IDs[i][j]  << " -" << IDs[i + m_x][j - m_y] << " -" << var_index + additional_vars - 1 << " 0\n";
+                        // additional_vars++;
+                        num_clauses++;
+                        continue;
+                    }
+
+                    out << "-" << var_index + additional_vars - 1 << " " << var_index + additional_vars << " 0\n";
+                    out << "-" << IDs[i][j]  << " -" << IDs[i + m_x][j - m_y] << " " << var_index + additional_vars << " 0\n";
+                    out << "-" << IDs[i][j]  << " -" << IDs[i + m_x][j - m_y] << " -" << var_index + additional_vars - 1 << " 0\n";
+                    num_clauses += 3;
+
+                    additional_vars++;
+
+                }
+            }
+
+            var_index += additional_vars;
+
+        }
+    }
+
     // int strlen = 6 + to_string(pow(N, 2)).length() + 1 + to_string(num_clauses).length();
     out.seekp(0);
     out << "p cnf " << var_index - 1 << " " << num_clauses;
